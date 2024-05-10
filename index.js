@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-require('dotenv').config()
+require('dotenv').config();
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const port = 5000;
@@ -21,6 +21,21 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
+        const categoriesCollection = client.db('careerHub').collection('categories');
+        const jobsCollection = client.db('careerHub').collection('jobs');
+
+        app.get('/categories', async (req, res) => {
+            const query = {};
+            const categories = await categoriesCollection.find(query).toArray();
+            res.send(categories);
+        });
+
+        app.get('/jobs', async (req, res) => {
+            const query = {};
+            const jobs = await jobsCollection.find(query).toArray();
+            res.send(jobs);
+        });
+
 
     }
     finally { }
