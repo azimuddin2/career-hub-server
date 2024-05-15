@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = 5000;
 
 // middleware
@@ -22,6 +22,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         const jobsCollection = client.db('careerHub').collection('jobs');
+        const applyJobCollection = client.db('careerHub').collection('applyJob');
 
         app.get('/jobs', async (req, res) => {
             const query = {};
@@ -29,6 +30,24 @@ async function run() {
             res.send(jobs);
         });
 
+        app.get('/job/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await jobsCollection.findOne(query);
+            res.send(result);
+        });
+
+        app.post('/apply-job', async (req, res) => {
+            const applyJobInfo = req.body;
+            const result = await applyJobCollection.insertOne(applyJobInfo);
+            res.send(result);
+        });
+
+        app.get('/apply-job', async (req, res) => {
+            const query = {};
+            const applyJobs = await applyJobCollection.find(query).toArray();
+            res.send(applyJobs);
+        });
 
     }
     finally { }
