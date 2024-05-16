@@ -24,6 +24,7 @@ async function run() {
         const jobsCollection = client.db('careerHub').collection('jobs');
         const applyJobCollection = client.db('careerHub').collection('applyJob');
 
+        // jobs related api
         app.get('/jobs', async (req, res) => {
             const query = {};
             const jobs = await jobsCollection.find(query).toArray();
@@ -37,6 +38,7 @@ async function run() {
             res.send(result);
         });
 
+        // apply jobs  related api
         app.post('/apply-job', async (req, res) => {
             const applyJobInfo = req.body;
             const result = await applyJobCollection.insertOne(applyJobInfo);
@@ -44,25 +46,20 @@ async function run() {
         });
 
         app.get('/apply-job', async (req, res) => {
-
-
             const jobFilter = req.query.filter;
-
-
 
             if (jobFilter === 'Remote') {
                 const applyJobs = await applyJobCollection.find({ remote_or_onsite: "Remote" }).toArray();
-                return res.send(applyJobs)
+                return res.send(applyJobs);
             }
             else if (jobFilter === 'Onsite') {
                 const applyJobs = await applyJobCollection.find({ remote_or_onsite: "Onsite" }).toArray();
-                return res.send(applyJobs)
+                return res.send(applyJobs);
             }
             else {
                 const applyJobs = await applyJobCollection.find({}).toArray();
-                return res.send(applyJobs)
+                return res.send(applyJobs);
             }
-
         });
 
     }
