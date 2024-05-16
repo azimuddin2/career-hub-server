@@ -44,9 +44,25 @@ async function run() {
         });
 
         app.get('/apply-job', async (req, res) => {
-            const query = {};
-            const applyJobs = await applyJobCollection.find(query).toArray();
-            res.send(applyJobs);
+
+
+            const jobFilter = req.query.filter;
+
+
+
+            if (jobFilter === 'Remote') {
+                const applyJobs = await applyJobCollection.find({ remote_or_onsite: "Remote" }).toArray();
+                return res.send(applyJobs)
+            }
+            else if (jobFilter === 'Onsite') {
+                const applyJobs = await applyJobCollection.find({ remote_or_onsite: "Onsite" }).toArray();
+                return res.send(applyJobs)
+            }
+            else {
+                const applyJobs = await applyJobCollection.find({}).toArray();
+                return res.send(applyJobs)
+            }
+
         });
 
     }
